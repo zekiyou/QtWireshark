@@ -37,10 +37,13 @@ FORMS += \
 INCLUDEPATH += \
         ../WpdPack_4_1_2/WpdPack/Include
 
-LIBS += \
-        ../WpdPack_4_1_2/WpdPack/Lib/libwpcap.a
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    src.qrc
+
+DISTFILES +=

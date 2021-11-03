@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include <sys/socket.h>
-#include "pcap.h"
 
 int main(int argc, char *argv[])
 {

@@ -10,12 +10,14 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QStatusBar>
@@ -30,6 +32,8 @@ QT_BEGIN_NAMESPACE
 class Ui_MainWindow
 {
 public:
+    QAction *actionrun_stop;
+    QAction *actionclear;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_2;
     QWidget *widget;
@@ -42,6 +46,8 @@ public:
     QTableWidget *tableWidget;
     QTreeWidget *treeWidget;
     QMenuBar *menuBar;
+    QMenu *menuproject;
+    QMenu *menurun;
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 
@@ -50,6 +56,16 @@ public:
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QStringLiteral("MainWindow"));
         MainWindow->resize(807, 465);
+        actionrun_stop = new QAction(MainWindow);
+        actionrun_stop->setObjectName(QStringLiteral("actionrun_stop"));
+        QIcon icon;
+        icon.addFile(QStringLiteral(":/course.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionrun_stop->setIcon(icon);
+        actionclear = new QAction(MainWindow);
+        actionclear->setObjectName(QStringLiteral("actionclear"));
+        QIcon icon1;
+        icon1.addFile(QStringLiteral(":/delete.png"), QSize(), QIcon::Normal, QIcon::Off);
+        actionclear->setIcon(icon1);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         verticalLayout_2 = new QVBoxLayout(centralWidget);
@@ -104,6 +120,10 @@ public:
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QStringLiteral("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 807, 27));
+        menuproject = new QMenu(menuBar);
+        menuproject->setObjectName(QStringLiteral("menuproject"));
+        menurun = new QMenu(menuBar);
+        menurun->setObjectName(QStringLiteral("menurun"));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
@@ -111,6 +131,11 @@ public:
         statusBar = new QStatusBar(MainWindow);
         statusBar->setObjectName(QStringLiteral("statusBar"));
         MainWindow->setStatusBar(statusBar);
+
+        menuBar->addAction(menuproject->menuAction());
+        menuBar->addAction(menurun->menuAction());
+        menurun->addAction(actionrun_stop);
+        menurun->addAction(actionclear);
 
         retranslateUi(MainWindow);
 
@@ -120,6 +145,10 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
+        actionrun_stop->setText(QApplication::translate("MainWindow", "run & stop", nullptr));
+        actionclear->setText(QApplication::translate("MainWindow", "clear", nullptr));
+        menuproject->setTitle(QApplication::translate("MainWindow", "Project", nullptr));
+        menurun->setTitle(QApplication::translate("MainWindow", "Run", nullptr));
     } // retranslateUi
 
 };

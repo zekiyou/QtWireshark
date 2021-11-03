@@ -38,7 +38,7 @@ DISTNAME      = network-shark1.0.0
 DISTDIR = /home/zeki_you/Code/QTCode/QtWireshark/build-network-shark-unknown-Debug/.tmp/network-shark1.0.0
 LINK          = g++
 LFLAGS        = 
-LIBS          = $(SUBLIBS) ../WpdPack_4_1_2/WpdPack/Lib/libwpcap.a -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
+LIBS          = $(SUBLIBS) -lQt5Widgets -lQt5Gui -lQt5Core -lGL -lpthread 
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -51,9 +51,11 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../network-shark/main.cpp \
-		../network-shark/mainwindow.cpp moc_mainwindow.cpp
+		../network-shark/mainwindow.cpp qrc_src.cpp \
+		moc_mainwindow.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
+		qrc_src.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -131,6 +133,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		../network-shark/.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -239,6 +242,7 @@ Makefile: ../network-shark/network-shark.pro /usr/lib/x86_64-linux-gnu/qt5/mkspe
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -259,6 +263,7 @@ Makefile: ../network-shark/network-shark.pro /usr/lib/x86_64-linux-gnu/qt5/mkspe
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../network-shark/network-shark.pro \
+		../network-shark/src.qrc \
 		/usr/lib/x86_64-linux-gnu/libQt5Widgets.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Gui.prl \
 		/usr/lib/x86_64-linux-gnu/libQt5Core.prl
@@ -339,6 +344,7 @@ Makefile: ../network-shark/network-shark.pro /usr/lib/x86_64-linux-gnu/qt5/mkspe
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -359,6 +365,7 @@ Makefile: ../network-shark/network-shark.pro /usr/lib/x86_64-linux-gnu/qt5/mkspe
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf:
 ../network-shark/network-shark.pro:
+../network-shark/src.qrc:
 /usr/lib/x86_64-linux-gnu/libQt5Widgets.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Gui.prl:
 /usr/lib/x86_64-linux-gnu/libQt5Core.prl:
@@ -376,6 +383,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+	$(COPY_FILE) --parents ../network-shark/src.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../network-shark/mainwindow.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../network-shark/main.cpp ../network-shark/mainwindow.cpp $(DISTDIR)/
@@ -403,8 +411,16 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_src.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) qrc_src.cpp
+qrc_src.cpp: ../network-shark/src.qrc \
+		/usr/lib/qt5/bin/rcc \
+		../network-shark/play.png \
+		../network-shark/course.png \
+		../network-shark/delete.png
+	/usr/lib/qt5/bin/rcc -name src ../network-shark/src.qrc -o qrc_src.cpp
+
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
@@ -414,7 +430,14 @@ moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 compiler_moc_header_make_all: moc_mainwindow.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp
-moc_mainwindow.cpp: ../network-shark/mainwindow.h \
+moc_mainwindow.cpp: ../WpdPack_4_1_2/WpdPack/Include/pcap.h \
+		../WpdPack_4_1_2/WpdPack/Include/pcap/pcap.h \
+		../WpdPack_4_1_2/WpdPack/Include/pcap-stdinc.h \
+		../WpdPack_4_1_2/WpdPack/Include/bittypes.h \
+		../WpdPack_4_1_2/WpdPack/Include/pcap/bpf.h \
+		../WpdPack_4_1_2/WpdPack/Include/Win32-Extensions.h \
+		../WpdPack_4_1_2/WpdPack/Include/remote-ext.h \
+		../network-shark/mainwindow.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/zeki_you/Code/QTCode/QtWireshark/build-network-shark-unknown-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/zeki_you/Code/QTCode/QtWireshark/network-shark -I/home/zeki_you/Code/QTCode/QtWireshark/WpdPack_4_1_2/WpdPack/Include -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/8 -I/usr/include/x86_64-linux-gnu/c++/8 -I/usr/include/c++/8/backward -I/usr/lib/gcc/x86_64-linux-gnu/8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../network-shark/mainwindow.h -o moc_mainwindow.cpp
@@ -436,7 +459,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
 
@@ -451,8 +474,18 @@ main.o: ../network-shark/main.cpp ../network-shark/mainwindow.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../network-shark/main.cpp
 
 mainwindow.o: ../network-shark/mainwindow.cpp ../network-shark/mainwindow.h \
+		../WpdPack_4_1_2/WpdPack/Include/pcap.h \
+		../WpdPack_4_1_2/WpdPack/Include/pcap/pcap.h \
+		../WpdPack_4_1_2/WpdPack/Include/pcap-stdinc.h \
+		../WpdPack_4_1_2/WpdPack/Include/bittypes.h \
+		../WpdPack_4_1_2/WpdPack/Include/pcap/bpf.h \
+		../WpdPack_4_1_2/WpdPack/Include/Win32-Extensions.h \
+		../WpdPack_4_1_2/WpdPack/Include/remote-ext.h \
 		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../network-shark/mainwindow.cpp
+
+qrc_src.o: qrc_src.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_src.o qrc_src.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
